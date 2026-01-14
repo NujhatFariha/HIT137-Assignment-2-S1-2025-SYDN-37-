@@ -79,3 +79,78 @@ else:
 
 #......SEASONAL AVERAGE part ends.......
 
+
+# ---------------------------------------------------------------------------------------------------------
+
+
+
+#-----------------------=--------------- SOLVED BY TANJIMA PARVIN TANNA -------------------------------------------------------------
+
+#......TEMPERATURE RANGE part starts.......
+
+# Finding the largest temperature range by subtracting the highest and lowest temperature
+final_df['maximum_temperature'] = final_df[months_name].max(axis=1)
+final_df['minimum_temperature'] = final_df[months_name].min(axis=1)
+final_df['largest_temperature_range'] = final_df['maximum_temperature'] - final_df['minimum_temperature']
+
+# Finding the highest temperature value
+highest_temperature = final_df['largest_temperature_range'].max()
+
+# handling ties
+multiple_station_tie = final_df[final_df['largest_temperature_range'] == highest_temperature]
+
+#Looping through the row and column of the stations that tied and display the largest temperature range 
+for index, row in multiple_station_tie.iterrows():
+    temperature_range = (f"Station {row['STATION_NAME']}: Range {row['largest_temperature_range']:.1f}°C "
+                         f"(Max: {row['maximum_temperature']:.1f}°C, Min: {row['minimum_temperature']:.1f}°C)\n")
+
+# saving results to the 'largest_temp_range_station.txt' file
+temperature_range_file = open('largest_temp_range_station.txt', 'w')
+temperature_range_file.write(temperature_range)
+temperature_range_file.close()
+
+# checking if the file has been saved or not
+if os.path.exists('largest_temp_range_station.txt'):
+    print("temperature range has been saved in the text file")
+else:
+    print("temperature range not saved")
+
+#......TEMPERATURE RANGE part ends.......
+
+
+
+#......TEMPERATURE STABILITY  part starts.......
+
+# Calculating standard deviatio for each station 
+final_df['standard_deviation'] = final_df[months_name].std(axis=1)
+
+# finding the smallest and largest standard deviation
+smallest_standard_deviation = final_df['standard_deviation'].min()
+largest_standard_deviation = final_df['standard_deviation'].max()
+
+# handling ties
+stable_temperature_stations = final_df[final_df['standard_deviation'] == smallest_standard_deviation ]
+variable_temperature_stations = final_df[final_df['standard_deviation'] == largest_standard_deviation]
+
+# displaying the results
+for index, row in stable_temperature_stations.iterrows():
+    most_stable_temperature_station = (f"Most Stable: Station {row['STATION_NAME']}: StdDev {row['standard_deviation']:.1f}°C\n")
+
+for index, row in variable_temperature_stations.iterrows():
+    most_variable_temperature_station = (f"Most Variable: Station {row['STATION_NAME']}: StdDev {row['standard_deviation']:.1f}°C\n")
+
+# saving results to the 'temperature_stability_stations.txt' file
+temperature_stability_stations_file = open('temperature_stability_stations.txt', 'w')
+temperature_stability_stations_file.write(most_stable_temperature_station)
+temperature_stability_stations_file.write(most_variable_temperature_station)
+temperature_stability_stations_file.close()
+
+# checking if the file has been saved or not
+if os.path.exists('temperature_stability_stations.txt'):
+    print("temperature stability has been saved in the text file")
+else:
+    print("temperature stability not saved")
+
+#......TEMPERATURE STABILITY part ends.......
+
+# -----------------------------------------------------
